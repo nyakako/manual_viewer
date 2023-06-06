@@ -1,0 +1,60 @@
+@startuml ER_diagram
+
+hide circle
+skinparam linetype ortho
+
+entity "Users" as users {
+  + user_id : int
+  --
+  user_name : varchar
+  email_address : varchar
+  password : varchar
+  role : varchar
+}
+
+entity "Tasks" as tasks {
+  + task_id : int
+  --
+  task_name : varchar
+  task_description : varchar
+  total_view_count : int
+}
+
+entity "TaskSteps" as task_steps {
+  + step_id : int
+  --
+  task_id : int
+  step_name : varchar
+  step_description : varchar
+  previous_step_id : int
+  next_step_id : int
+}
+
+entity "Documents" as documents {
+  + document_id : int
+  --
+  document_name : varchar
+  document_file : varchar
+}
+
+entity "TaskDocuments" as task_documents {
+  + step_id : int
+  + document_id : int
+}
+
+entity "UserTasks" as user_tasks {
+  + user_id : int
+  + task_id : int
+  --
+  is_bookmarked : boolean
+  view_count : int
+}
+
+users ||--o{ user_tasks : has
+user_tasks }o--|| tasks : views
+tasks ||--o{ task_steps : has
+task_steps }o--|| task_steps : next/previous
+task_steps ||--o{ task_documents : has
+task_documents }o--|| documents : is
+
+@enduml

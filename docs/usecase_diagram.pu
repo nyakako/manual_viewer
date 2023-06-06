@@ -1,0 +1,60 @@
+@startuml er_diagram
+
+left to right direction
+
+actor "一般ユーザー" as user
+actor "管理者" as admin
+
+rectangle "作業手順・マニュアル管理システム" {
+
+  package "ユーザー認証" {
+    user -- (新規登録)
+    user -- (ログイン)
+    user -- (ログアウト)
+    user -- (アカウント削除)
+    user -- (メールアドレス変更)
+    user -- (パスワード変更)
+    user -- (ユーザー名変更)
+  }
+
+  package "タスク閲覧" {
+    user -- (タスク一覧閲覧)
+    user -- (タスクのブックマーク)
+    (タスク一覧閲覧) .> (タスク詳細閲覧)
+    (タスク詳細閲覧) .> (作業手順詳細閲覧)
+    (作業手順詳細閲覧) .> (マニュアル詳細閲覧)
+    (タスク一覧閲覧) .> (タスクのブックマーク)
+  }
+
+  package "タスクランキング閲覧" {
+    user -- (個人タスクランキング閲覧)
+    user -- (全体タスクランキング閲覧)
+  }
+
+  package "ユーザー管理" {
+    admin -- (ユーザーの追加)
+    admin -- (ユーザーの更新)
+    admin -- (ユーザーの削除)
+  }
+
+  package "タスク管理" {
+    admin -- (タスクの追加)
+    admin -- (タスクの更新)
+    admin -- (タスクの削除)
+  }
+
+  package "作業手順管理" {
+    admin -- (作業手順の追加)
+    admin -- (作業手順の更新)
+    admin -- (作業手順の削除)
+  }
+
+  package "マニュアル管理" {
+    admin -- (マニュアルの追加)
+    admin -- (マニュアルの更新)
+    admin -- (マニュアルの削除)
+  }
+
+}
+
+@enduml
