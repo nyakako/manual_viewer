@@ -1,0 +1,73 @@
+@startuml new
+
+!define Table(name,desc) class name as "desc" << (T,#FFAAAA) >>
+!define PrimaryKey(x)  primary key(x) #AAAAFF
+!define ForeignKey(x)  foreign key(x) #FFAAAA
+
+hide circle
+hide empty attributes
+
+Table(Departments, "部署") {
+  DepartmentID INT <<PK>>
+  DepartmentName VARCHAR(255)
+}
+
+Table(Categories, "カテゴリ") {
+  CategoryID INT <<PK>>
+  CategoryName VARCHAR(255)
+  DepartmentID INT <<FK>>
+}
+
+Table(Tasks, "作業") {
+  TaskID INT <<PK>>
+  TaskName VARCHAR(255)
+  CategoryID INT <<FK>>
+}
+
+Table(Steps, "手順") {
+  StepID INT <<PK>>
+  StepName VARCHAR(255)
+  TaskID INT <<FK>>
+  PreviousStepID INT <<FK, NULL>>
+  NextStepID INT <<FK, NULL>>
+}
+
+Table(StepDocumentRelationships, "手順-ドキュメント関係") {
+  RelationshipID INT <<PK>>
+  StepID INT <<FK>>
+  DocumentID INT <<FK>>
+}
+
+Table(Documents, "ドキュメント") {
+  DocumentID INT <<PK>>
+  ManualNumber VARCHAR(255)
+  ManualTitle VARCHAR(255)
+  DocumentFilename VARCHAR(255)
+  DocumentContent TEXT
+}
+
+Table(Users, "ユーザー") {
+  UserID INT <<PK>>
+  Username VARCHAR(255)
+  Password VARCHAR(255)
+  UserRole VARCHAR(255)
+  DepartmentID INT <<FK>>
+}
+
+Table(Bookmarks, "ブックマーク") {
+  BookmarkID INT <<PK>>
+  UserID INT <<FK>>
+  DocumentID INT <<FK>>
+}
+
+Departments ||-ri-o{ Categories
+Categories ||-ri-o{ Tasks
+Tasks ||-ri-o{ Steps
+Steps ||-ri-o{ Steps : PreviousStepID
+Steps ||-le-o{ Steps : NextStepID
+Steps }-do-|{ StepDocumentRelationships
+StepDocumentRelationships }-ri-|| Documents
+Users ||-ri-o{ Bookmarks
+Users ||-ri-|| Departments
+
+@enduml
