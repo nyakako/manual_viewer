@@ -1,0 +1,19 @@
+<!-- tasks.html -->
+<h1>tasks</h1>
+
+
+{% for task in tasks %}
+    <p>カテゴリ：{{ task.category.name }}</p>
+    <h2>作業名：{{ task.name }}</h2>
+
+    <h3>手順一覧:</h3>
+    <ul>
+        {% for step in task.step_set.all %}
+        <li>
+            <a href="{% url 'document_detail' step.documents.first.pk %}">
+                {{ step.name }}
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
+{% endfor %}

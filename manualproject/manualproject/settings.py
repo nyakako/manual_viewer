@@ -133,4 +133,5 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "manualapp.CustomUser"
 
-LOGIN_REDIRECT_URL = "/documents"
+LOGIN_URL = "/login"
+LOGIN_REDIRECT_URL = "/task_list"

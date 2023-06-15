@@ -1,0 +1,79 @@
+{% block content %}
+
+{% if task_name %}
+    <p>作業名: {{ task_name }}</p>
+{% else %}
+    <p>作業名: このドキュメントはタスクに紐づいていません。</p>
+{% endif %}
+
+{% if step_name %}
+    <p>手順{{ step_order }}: {{ step_name }}</p>
+{% else %}
+    <p>手順名: このドキュメントは手順に紐づいていません。</p>
+{% endif %}
+
+  <h2>ドキュメント詳細</h2>
+
+  <h3>ドキュメント番号: {{ document.document_number }}</h3>
+  <h3>ドキュメントタイトル: {{ document.document_title }}</h3>
+  <h3>ドキュメントファイル名: {{ document.document_filename }}</h3>
+  <p>ドキュメント内容: {{ document.document_content }}</p>
+  <p>作成日時: {{ document.created_at }}</p>
+  <p>更新日時: {{ document.updated_at }}</p>
+
+
+
+{% for step in document.step_set.all %}
+    <h3>関連手順 </h3>
+    <li>{{ step.name }}</li>
+    <h4>前の手順</h4>
+    <ul>
+        {% for previous_step in step.previous_steps.all %}
+            <li>手順{{ previous_step.order }}: {{ previous_step.name }}</li>
+        {% endfor %}
+    </ul>
+    <h4>次の手順</h4>
+    <ul>
+        {% for next_step in step.next_steps.all %}
+            <li>手順{{ next_step.order }}:{{ next_step.name }}</li>
+        {% endfor %}
+    </ul>
+{% endfor %}
+
+
+  <!-- <ul>
+    {% for step in document.step_set.all %}
+    <li>{{ step.name }}</li>
+    <h4>前の手順</h4>
+    <ul>
+        <li>{{ step.previous_steps.all|first }}</li>
+    </ul>
+    <h4>次の手順</h4>
+    <ul>
+        <li>{{ step.next_steps.all|first }}</li>
+    </ul>
+
+    {% endfor %}
+  </ul> -->
+
+  <!-- <h3>このドキュメントの関連ドキュメント</h3>
+  <ul>
+    {% for step in document.step_set.all %}
+        {% for related_document in step.documents.all %}
+        <li><a href="{% url 'document_detail' related_document.id %}">{{ related_document.document_title }}</a></li>
+        {% endfor %}
+    {% endfor %}
+  </ul> -->
+
+<h2>関連ドキュメント:</h2>
+{% if related_documents %}
+<ul>
+{% for related_document in related_documents %}
+    <li><a href="{% url 'document_detail' related_document.pk %}">{{ related_document.document_title }}</a></li>
+{% endfor %}
+</ul>
+{% else %}
+    <p>関連ドキュメントはありません。</p>
+{% endif %}
+
+{% endblock %}

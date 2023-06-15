@@ -66,6 +66,7 @@ class Document(models.Model):
 class Step(models.Model):
     name = models.CharField(verbose_name="手順名", max_length=255)
     task = models.ForeignKey(Task, verbose_name="作業", on_delete=models.CASCADE)
+    order = models.PositiveIntegerField(default=1)
     # previous_steps = models.ManyToManyField(
     #     "self",
     #     verbose_name="前手順",
@@ -91,6 +92,7 @@ class Step(models.Model):
     class Meta:
         verbose_name = "作業手順"
         verbose_name_plural = "作業手順"
+        ordering = ["order"]
 
     def __str__(self):
         return self.name
@@ -112,4 +114,4 @@ class Bookmark(models.Model):
 
     class Meta:
         verbose_name = "ブックマーク"
-        verbose_name_plural = "ブックマーク　"
+        verbose_name_plural = "ブックマーク"
