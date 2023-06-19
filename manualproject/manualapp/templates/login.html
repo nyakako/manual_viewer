@@ -1,10 +1,41 @@
-
-
+{% extends 'base.html' %}
+{% load static %}
+{% block extra_css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'manualapp/style.css' %}">
+{% endblock %}
 {% block content %}
-  <h2>Login</h2>
-  <form method="post">
-  {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">ログイン</button>
-  </form>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="form-signin w-100 m-auto">
+        <form method="post">
+          {% csrf_token %}
+          <h1 class="h3 mb-3 fw-normal">ログイン</h1>
+					{% if form.username.errors %}
+					<div class="alert alert-danger" role="alert">
+							{{ form.username.errors }}
+					</div>
+					{% endif %}
+					{% if form.password.errors %}
+					<div class="alert alert-danger" role="alert">
+							{{ form.password.errors }}
+					</div>
+					{% endif %}
+      
+          <div class="form-floating">
+            <input type="email" name="{{ form.username.name }}" class="form-control" id="floatingInput" placeholder="name@example.com" required autofocus>
+            <label for="floatingInput">email</label>
+          </div>
+          <div class="form-floating">
+            <input type="password" name="{{ form.password.name }}" class="form-control" id="floatingPassword" placeholder="Password" required>
+            <label for="floatingPassword">パスワード</label>
+          </div>
+          <button class="btn btn-primary w-100 py-2 my-4" type="submit">ログイン</button>
+        </form>
+        <a class="btn btn-secondary w-100 py-2 my-4" href="{% url 'register' %}">新規登録</a>
+      </div>
+
+    </div>
+</div>
+
 {% endblock %}

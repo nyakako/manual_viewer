@@ -1,79 +1,94 @@
+{% extends 'base.html' %}
 {% block content %}
 
 {% if task_name %}
-    <p>作業名: {{ task_name }}</p>
+<p>作業名: {{ task_name }}</p>
 {% else %}
-    <p>作業名: このドキュメントはタスクに紐づいていません。</p>
+<p>作業名: このドキュメントはタスクに紐づいていません。</p>
 {% endif %}
 
 {% if step_name %}
-    <p>手順{{ step_order }}: {{ step_name }}</p>
+<p>手順{{ step_order }} : {{ step_name }}</p>
 {% else %}
-    <p>手順名: このドキュメントは手順に紐づいていません。</p>
+<p>手順名: このドキュメントは手順に紐づいていません。</p>
 {% endif %}
 
-  <h2>ドキュメント詳細</h2>
+<h2>{{ document.document_number }} : {{ document.document_title }}
+	{% if user.is_authenticated %}
+		{% if is_bookmarked %}
+			<button type="button" id="bookmarkButton" class="btn btn-secondary mx-2">ブックマークを削除</button>
+		{% else %}
+			<button type="button" id="bookmarkButton" class="btn btn-danger mx-2">ブックマークに追加</button>
+		{% endif %}
+</button>
+{% endif %}
+</h2>
 
-  <h3>ドキュメント番号: {{ document.document_number }}</h3>
-  <h3>ドキュメントタイトル: {{ document.document_title }}</h3>
-  <h3>ドキュメントファイル名: {{ document.document_filename }}</h3>
-  <p>ドキュメント内容: {{ document.document_content }}</p>
-  <p>作成日時: {{ document.created_at }}</p>
-  <p>更新日時: {{ document.updated_at }}</p>
+<div class="my-4">
+	ドキュメント内容:
+	<br>
+	 {{ document.document_content }}
+</div>
 
+<!-- <p>ドキュメントファイル名: {{ document.document_filename }}</p> -->
+<p>作成日時: {{ document.created_at }}
+	<br>更新日時: {{ document.updated_at }}
+</p>
 
-
-{% for step in document.step_set.all %}
-    <h3>関連手順 </h3>
-    <li>{{ step.name }}</li>
-    <h4>前の手順</h4>
-    <ul>
-        {% for previous_step in step.previous_steps.all %}
-            <li>手順{{ previous_step.order }}: {{ previous_step.name }}</li>
-        {% endfor %}
-    </ul>
-    <h4>次の手順</h4>
-    <ul>
-        {% for next_step in step.next_steps.all %}
-            <li>手順{{ next_step.order }}:{{ next_step.name }}</li>
-        {% endfor %}
-    </ul>
-{% endfor %}
-
-
-  <!-- <ul>
-    {% for step in document.step_set.all %}
-    <li>{{ step.name }}</li>
-    <h4>前の手順</h4>
-    <ul>
-        <li>{{ step.previous_steps.all|first }}</li>
-    </ul>
-    <h4>次の手順</h4>
-    <ul>
-        <li>{{ step.next_steps.all|first }}</li>
-    </ul>
-
-    {% endfor %}
-  </ul> -->
-
-  <!-- <h3>このドキュメントの関連ドキュメント</h3>
-  <ul>
-    {% for step in document.step_set.all %}
-        {% for related_document in step.documents.all %}
-        <li><a href="{% url 'document_detail' related_document.id %}">{{ related_document.document_title }}</a></li>
-        {% endfor %}
-    {% endfor %}
-  </ul> -->
-
-<h2>関連ドキュメント:</h2>
+<h5>関連ドキュメント:</h5>
 {% if related_documents %}
 <ul>
-{% for related_document in related_documents %}
-    <li><a href="{% url 'document_detail' related_document.pk %}">{{ related_document.document_title }}</a></li>
-{% endfor %}
+	{% for related_document in related_documents %}
+	<li><a href="{% url 'document_detail' related_document.pk %}">{{ related_document.document_title }}</a></li>
+	{% endfor %}
 </ul>
 {% else %}
-    <p>関連ドキュメントはありません。</p>
+<p>関連ドキュメントはありません。</p>
 {% endif %}
 
+{% for step in document.step_set.all %}
+<div class="my-4">
+	<h5>関連手順 {{ step.name }}</h5>
+	<div class="row justify-content-between">
+		<div class="col-4">
+			前の手順
+			<ul>
+				{% for previous_step in step.previous_steps.all %}
+				<li>手順{{ previous_step.order }}: {{ previous_step.name }}</li>
+				{% endfor %}
+			</ul>
+		</div>
+		<div class="col-4">
+			次の手順
+			<ul>
+				{% for next_step in step.next_steps.all %}
+				<li>手順{{ next_step.order }}:{{ next_step.name }}</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+</div>
+{% endfor %}
+
+<form id="csrfForm" style="display: none;">
+	{% csrf_token %}
+</form>
+
+<script>
+	const bookmarkButton = document.getElementById("bookmarkButton");
+
+	bookmarkButton.addEventListener("click", function() {
+		fetch("{% url 'bookmark' document.id %}", {
+			method: "POST",
+			headers: {
+				"X-CSRFToken": document.querySelector('#csrfForm [name="csrfmiddlewaretoken"]').value
+			}
+		})
+		.then(response => response.json())
+		.then(data => {
+			// alert(data.message);
+			location.reload();
+		});
+	});
+</script>
 {% endblock %}
