@@ -21,3 +21,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("manualapp.urls")),
 ]
+
+admin.site.site_header = "Manual Viewer 管理者用画面"  # default: "Django administration"
+# admin.site.index_title = "Manual Viewer 管理者用画面"  # default: "Site administration"
+admin.site.site_title = "Manual Viewer 管理者用画面"  # default: "Django site admin"

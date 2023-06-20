@@ -1,46 +1,44 @@
-{% extends 'base.html' %}
-{% block content %}
+{% extends 'base.html' %} {% block content %}
 
 <div class="container">
+  <h1 class="mb-4">作業一覧</h1>
 
-    <h1 class="mb-4">作業一覧</h1>
-
-    <form method="GET" class="my-3">
-        <div class="input-group">
-            <input type="text" name="search" value="{{search}}" class="form-control" placeholder="Search tasks">
-            <div class="input-group-append">
-                <button class="btn btn-primary" type="submit">Search</button>
-            </div>
-        </div>
-    </form>
-    {% for category in category_list %}
-    <h2>{{ category.name }}</h2>
-    {% if category.task_set.all %}
-    {% for task in category.task_set.all %}
-    {% if task in task_list %}
-    <div class="card mb-3">
-        <div class="card-body">
-            <h5 class="card-title">{{ task.name }}</h5>
-            {% if task.step_set.all %}
-            <h6 class="card-subtitle mb-2 text-muted">手順一覧:</h6>
-            {% for step in task.step_set.all %}
-            {% if step.documents.first %}
-            <a href="{% url 'document_detail' step.documents.first.pk %}" class="card-link">手順{{ step.order }}. {{step.name }}</a><br>
-            {% else %}
-            <p class="card-text">手順{{ step.order }}. {{ step.name }} (マニュアル未登録)</p>
-            {% endif %}
-            {% endfor %}
-            {% else %}
-            <p class="card-text">手順登録無し</p>
-            {% endif %}
-        </div>
+  <form method="GET" class="my-3">
+    <div class="input-group">
+      <input
+        type="text"
+        name="search"
+        value="{{search}}"
+        class="form-control"
+        placeholder="Search tasks"
+      />
+      <div class="input-group-append">
+        <button class="btn btn-primary" type="submit">Search</button>
+      </div>
     </div>
-    {% endif %}
-    {% endfor %}
-    {% else %}
-    <p class="card-text">作業登録無し</p>
-    {% endif %}
-    {% endfor %}
+  </form>
+  {% for category in category_list %}
+  <h2>{{ category.name }}</h2>
+  {% if category.task_set.all %} {% for task in category.task_set.all %} {% if task in task_list %}
+  <div class="card mb-3">
+    <div class="card-body">
+      <h5 class="card-title">{{ task.name }}</h5>
+      {% if task.step_set.all %}
+      <h6 class="card-subtitle mb-2 text-muted">手順一覧:</h6>
+      {% for step in task.step_set.all %} {% if step.documents.first %}
+      <a href="{% url 'document_detail' step.documents.first.pk %}" class="card-link"
+        >手順{{ step.order }}. {{step.name }}</a
+      ><br />
+      {% else %}
+      <p class="card-text">手順{{ step.order }}. {{ step.name }} (マニュアル未登録)</p>
+      {% endif %} {% endfor %} {% else %}
+      <p class="card-text">手順登録無し</p>
+      {% endif %}
+    </div>
+  </div>
+  {% endif %} {% endfor %} {% else %}
+  <p class="card-text">作業登録無し</p>
+  {% endif %} {% endfor %}
 </div>
 
 {% endblock %}
