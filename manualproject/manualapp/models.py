@@ -66,14 +66,7 @@ class Document(models.Model):
 class Step(models.Model):
     name = models.CharField(verbose_name="手順名", max_length=255)
     task = models.ForeignKey(Task, verbose_name="作業", on_delete=models.CASCADE)
-    order = models.PositiveIntegerField(default=1)
-    # previous_steps = models.ManyToManyField(
-    #     "self",
-    #     verbose_name="前手順",
-    #     blank=True,
-    #     symmetrical=False,
-    #     related_name="is_next_steps",
-    # )
+    order = models.PositiveIntegerField(default=1, verbose_name="ステップ")
     next_steps = models.ManyToManyField(
         "self",
         verbose_name="後手順",
@@ -115,13 +108,19 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractUser):
-    username = models.CharField(max_length=150, unique=False, blank=True)
-    email = models.EmailField(unique=True)
+    username = models.CharField(
+        max_length=150, unique=False, blank=True, verbose_name="ユーザー名"
+    )
+    email = models.EmailField(unique=True, verbose_name="メールアドレス")
     department = models.ForeignKey(
         Department, verbose_name="部署", on_delete=models.PROTECT, null=True, blank=True
     )
-    is_active = models.BooleanField(default=True)
-    is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name="利用中",
+        help_text="退職者等、利用しないユーザーは削除せずにこのチェックを外してください。",
+    )
+    is_staff = models.BooleanField(default=False, verbose_name="管理者")
     created_at = models.DateTimeField(verbose_name="作成日時", auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name="更新日時", auto_now=True)
 
@@ -129,6 +128,10 @@ class CustomUser(AbstractUser):
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
+
+    class Meta:
+        verbose_name = "ユーザー"
+        verbose_name_plural = "ユーザー"
 
 
 class Bookmark(models.Model):
@@ -140,3 +143,6 @@ class Bookmark(models.Model):
     class Meta:
         verbose_name = "ブックマーク"
         verbose_name_plural = "ブックマーク"
+
+    def __str__(self):
+        return f"{self.user.username} - {self.document.document_number} - {self.document.document_title}"
