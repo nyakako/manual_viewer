@@ -20,6 +20,7 @@ from django.urls import include, path
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("manualapp.urls")),
+    path("manualapp/", include("manualapp.urls")),
 ]
 
 admin.site.site_header = "Manual Viewer 管理者用画面"  # default: "Django administration"

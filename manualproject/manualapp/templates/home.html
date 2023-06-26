@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block content_title %}ホーム{% endblock %}
+{% block breadcrumb %}
+    <li class="breadcrumb-item active" aria-current="page">{{ object.name }}</li>
+{% endblock %}
+{% block content %}
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+          <div class="col-md-4 col-12">
+            <!-- small box -->
+            <a href="{% url 'task_list' %}">
+            <div class="info-box bg-info">
+              <span class="info-box-icon bg-info"><i class="fas fa-briefcase"></i></span>
+              <div class="info-box-content">
+                <span class="info-box-text">作業から探す<i class="fas fa-arrow-circle-right ml-2"></i></span>
+              </div>
+            </div>
+            </a>
+          </div>
+          <!-- ./col -->
+          <div class="col-md-4 col-12">
+            <!-- small box -->
+            <a href="{% url 'document_list' %}">
+            <div class="info-box bg-success">
+              <span class="info-box-icon bg-success"><i class="far fa-file-alt"></i></span>
+              <div class="info-box-content">
+                <span class="info-box-text">マニュアルから探す<i class="fas fa-arrow-circle-right ml-2"></i></span>
+              </div>
+            </div>
+            </a>
+          </div>
+          <!-- ./col -->
+          <div class="col-md-4 col-12">
+            <!-- small box -->
+            <a href="{% url 'bookmark_list' %}">
+            <div class="info-box bg-danger">
+              <span class="info-box-icon bg-danger"><i class="far fa-bookmark"></i></span>
+              <div class="info-box-content">
+                <span class="info-box-text">ブックマークを見る<i class="fas fa-arrow-circle-right ml-2"></i></span>
+              </div>
+            </div>
+            </a>
+          </div>
+          <!-- ./col -->
+
+          <!-- ./col -->
+          <div class="row">
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">
+                    <i class="fas fa-file-alt mr-1"></i>
+                    最近更新されたマニュアル<small class="text-muted">（1ヶ月以内の最新10件）</small>
+                  </h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                  <ul class="list-unstyled">
+                    {% for document in recent_documents %}
+                    <li>
+                        <a href="{% url 'document_detail' document.id %}">{{ document.document_title }}</a> 
+                        - 更新日: {{ document.updated_at }}
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </div>
+                <!-- /.card-body -->
+              </div>
+              <!-- /.card -->
+            </div>
+            <!-- ./col -->
+            <div class="col-md-6">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">
+                    <i class="fas fa-bookmark mr-1"></i>
+                    最近のブックマーク<small class="text-muted">（最新10件）</small>
+                  </h3>
+                </div>
+                <!-- /.card-header -->
+                <div class="card-body">
+                  <ul class="list-unstyled">
+                    {% for bookmark in recent_bookmarks %}
+                        <li>
+                            <a href="{% url 'document_detail' bookmark.document.id %}">{{ bookmark.document.document_title }}</a>
+                            - 追加日: {{ bookmark.created_at }}
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                <!-- /.card-body -->
+              </div>
+              <!-- /.card -->
+            </div>
+          
+          </div>
+          <!-- /.row -->
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+ 
+{% endblock %}

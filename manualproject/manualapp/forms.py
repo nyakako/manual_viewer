@@ -12,14 +12,6 @@ class EmailAuthenticationForm(AuthenticationForm):
         super().__init__(*args, **kwargs)
         self.fields["username"].widget.attrs.update({"autofocus": ""})
 
-    def clean_username(self):
-        username = self.cleaned_data.get("username")
-        try:
-            get_user_model().objects.get(email=username)
-        except get_user_model().DoesNotExist:
-            raise forms.ValidationError("This email address does not exist.")
-        return username
-
 
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)

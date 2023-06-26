@@ -1,47 +1,106 @@
-{% extends 'base.html' %} {% load static %} {% block extra_css %}
-<link rel="stylesheet" type="text/css" href="{% static 'manualapp/style.css' %}" />
-{% endblock %} {% block content %}
+{% load static %} 
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manual Viewe | Log in</title>
 
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="form-signin w-100 m-auto">
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{%static 'AdminLTE-3.2.0/plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- icheck bootstrap -->
+  <link rel="stylesheet" href="{%static 'AdminLTE-3.2.0/plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{%static 'AdminLTE-3.2.0/dist/css/adminlte.min.css' %}">
+
+  <!-- <link rel="stylesheet" type="text/css" href="{% static 'manualapp/style.css' %}" /> -->
+</head>
+
+<body class="hold-transition login-page">
+<div class="login-box">
+  <div class="login-logo">
+    Manual Viewer
+  </div>
+  <!-- /.login-logo -->
+  <div class="card">
+    <div class="card-body login-card-body">
+      <p class="login-box-msg">ログイン情報を入力してください</p>
+
       <form method="post">
         {% csrf_token %}
-        <h1 class="h3 mb-3 fw-normal">ログイン</h1>
+        <!-- <h1 class="h3 mb-3 fw-normal">ログイン</h1> -->
         {% if form.username.errors %}
         <div class="alert alert-danger" role="alert">{{ form.username.errors }}</div>
-        {% endif %} {% if form.password.errors %}
+        {% endif %} 
+        {% if form.password.errors %}
         <div class="alert alert-danger" role="alert">{{ form.password.errors }}</div>
         {% endif %}
-
-        <div class="form-floating">
-          <input
-            type="email"
-            name="{{ form.username.name }}"
+        {% if form.non_field_errors %}
+        <div class="alert alert-danger" role="alert">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <div class="input-group mb-3">
+          <input 
+            type="email" 
             class="form-control"
-            id="floatingInput"
-            placeholder="name@example.com"
+            placeholder="メールアドレス"
+            name="{{ form.username.name }}"
             required
             autofocus
-          />
-          <label for="floatingInput">email</label>
+          >
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-envelope"></span>
+            </div>
+          </div>
         </div>
-        <div class="form-floating">
+        <div class="input-group mb-3">
           <input
-            type="password"
+            type="password" 
+            class="form-control" 
+            placeholder="パスワード"
             name="{{ form.password.name }}"
-            class="form-control"
-            id="floatingPassword"
-            placeholder="Password"
             required
-          />
-          <label for="floatingPassword">パスワード</label>
+          >
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-lock"></span>
+            </div>
+          </div>
         </div>
-        <button class="btn btn-primary w-100 py-2 my-4" type="submit">ログイン</button>
+        <div class="row">
+
+          <!-- /.col -->
+          <div class="col-12 my-1">
+            <button type="submit" class="btn btn-primary btn-block py-2">ログイン</button>
+          </div>
+          <!-- /.col -->
+        </div>
       </form>
-      <a class="btn btn-secondary w-100 py-2 my-4" href="{% url 'register' %}">新規登録</a>
+
+      <div class="social-auth-links text-center mb-3">
+        <p>- OR -</p>
+
+      </div>
+        <a class="btn btn-outline-secondary py-2 w-100" href="{% url 'register' %}">新規登録</a>
+      <!-- /.social-auth-links -->
+
+      <!-- <p class="mb-1">
+        <a href="forgot-password.html">I forgot my password</a>
+      </p> -->
+
     </div>
+    <!-- /.login-card-body -->
   </div>
 </div>
+<!-- /.login-box -->
 
-{% endblock %}
+<!-- jQuery -->
+<script src="{%static 'AdminLTE-3.2.0/plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<script src="{%static 'AdminLTE-3.2.0/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{%static 'AdminLTE-3.2.0/dist/js/adminlte.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+.card {
+    max-width: 980px !important;
+}
+
+.post > p {
+    font-size: 18px;
+    line-height: 2;
+    margin: 0 0 16px;
+    font-family: "メイリオ",Meiryo,sans-serif;
+}
