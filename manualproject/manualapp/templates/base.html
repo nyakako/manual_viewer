@@ -43,43 +43,24 @@
       <!-- <li class="nav-item d-none d-sm-inline-block">
         <a href="#" class="nav-link">Home</a>
       </li> -->
-      <!-- <li class="nav-item d-none d-sm-inline-block">
-        <a href="#" class="nav-link">Contact</a>
-      </li> -->
     </ul>
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
-      <!-- Navbar Search -->
-      <!-- <li class="nav-item">
-        <a class="nav-link" data-widget="navbar-search" href="#" role="button">
-          <i class="fas fa-search"></i>
-        </a>
-        <div class="navbar-search-block">
-          <form class="form-inline">
-            <div class="input-group input-group-sm">
-              <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-              <div class="input-group-append">
-                <button class="btn btn-navbar" type="submit">
-                  <i class="fas fa-search"></i>
-                </button>
-                <button class="btn btn-navbar" type="button" data-widget="navbar-search">
-                  <i class="fas fa-times"></i>
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </li> -->
+
       {% if user.is_authenticated %}
-      <li class="nav-item">
-        <a class="nav-link" href="#" role="button">
-          {{ user.username }} ( {{ user.department|default_if_none:'部署未登録' }} )
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {% if user.is_staff %}
+          {{ user.username }}&nbsp;(&nbsp;管理者&nbsp;)         
+          {% else %}
+            {{ user.username }} ( {{ user.department|default_if_none:'部署未登録' }} )
+          {% endif %}
         </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="{% url 'logout' %}">
-          <i class="fas fa-sign-out-alt mr-1"></i>ログアウト</a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+          <a class="nav-link" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt mr-1"></i>ログアウト</a>
+          <!-- <a class="dropdown-item" href="#">Another action</a> -->
+        </div>
       </li>
       {% endif %}
 
@@ -90,7 +71,7 @@
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-lightblue elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
+    <a href="{% url 'home' %}" class="brand-link">
       <span class="brand-text font-weight-light">Manual Viewer</span>
     </a>
 

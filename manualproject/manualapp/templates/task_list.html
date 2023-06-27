@@ -19,18 +19,18 @@
           <thead>
             <tr>
               <th scope="col">作業名</th>
-              <th scope="col">作成日</th>
               <th scope="col">カテゴリ名</th>
               <th scope="col">部署名</th>
+              <th scope="col">作成日</th>
             </tr>
           </thead>
           <tbody>
             {% for task in tasks %}
             <tr data-href="{% url 'task_step_list' task.id %}">
               <td>{{ task.name }}</td>
-              <td>{{ task.created_at }}</td>
               <td>{{ task.category.name }}</td>
               <td>{{ task.category.department.name }}</td>
+              <td>{{ task.created_at }}</td>
             </tr>
             {% empty %}
                 <tr>
@@ -47,24 +47,26 @@
 {% block extra_script %}
 <script>
 
-var tableOptions = {
-  "info": true,
-  "paging": true,
-  "searching": true,
-  "ordering": true,
-  "language": {
-            "url": "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Japanese.json"
+  var tableOptions = {
+    "info": true,
+    "paging": true,
+    "lengthChange":false,
+    "searching": true,
+    "ordering": true,
+    "order" :[[ 3, "desc"]],
+    "language": {
+              "url": "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Japanese.json"
+    }
   }
-}
-
-$(document).ready(function() {
-  $("#task-table").DataTable(tableOptions);
-
-  $('tr[data-href]').on('click', function() {
+  
+  $(function() {
+    $("#task-table").DataTable(tableOptions);
+  
+    $('tr[data-href]').on('click', function(e) {
       location.href = $(this).data('href');
+    });
   });
-});
-</script>
+  </script>
 
 {% endblock %}
 {% endblock %}

@@ -9,9 +9,11 @@
 	<i class="fas fa-briefcase mr-1"></i>
 	作業一覧</a>
 </li>
+{% if task_id %}
 <li class="breadcrumb-item">
 	<a href="{% url 'task_step_list' task_id %}">手順一覧</a>
 </li>
+{% endif %}
 <li class="breadcrumb-item active" aria-current="page">
 	<i class="far fa-file-alt mr-1"></i>{{ object }}
 </li>
@@ -23,7 +25,9 @@
 <div class="card">
 	<div class="row">
 		<div class="col-12 col-sm-6">
+			{% if task_id %}
 			<a href="{% url 'task_step_list' task_id %}">
+			{% endif %}
 			<div class="info-box bg-light">
 				<div class="info-box-content">
 					<span class="info-box-text text-center text-muted">作業名</span>
@@ -36,7 +40,9 @@
 					</span>
 				</div>
 			</div>
+			{% if task_id %}
 		  </a>
+			{% endif %}
 		</div>
 		<div class="col-12 col-sm-6">
 			<div class="info-box bg-light">
@@ -45,7 +51,7 @@
 						{% if step_name %}
 							手順{{ step_order }}
 						{% else %}
-							このドキュメントは手順に紐づいていません。
+							手順
 						{% endif %}
 					</span>
 					<span class="info-box-number text-center text-muted mb-0">
@@ -98,7 +104,7 @@
 					  </div>
 						{% endif %}
 						
-						{% if document.step_set %}
+						{% if step_name %}
 						<div class="card">
 							<div class="card-header h5">関連手順</div>
 							<div class="card-body">
@@ -139,8 +145,6 @@
 								</div>
 								</div>
 								</div>
-
-
 						{% endfor %}
 					  </div>
 					  </div>

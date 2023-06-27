@@ -3,6 +3,7 @@ from datetime import timedelta
 from django.conf import settings
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
+from django.core.exceptions import PermissionDenied
 from django.db.models import F, Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -34,6 +35,16 @@ class TaskStepsView(LoginRequiredMixin, DetailView):
     model = Task
     template_name = "task_step_list.html"
 
+    def get_object(self, queryset=None):
+        task = super().get_object(queryset)
+        if (
+            self.request.user.is_staff
+            or task.category.department == self.request.user.department
+        ):
+            return task
+        else:
+            raise PermissionDenied
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["steps"] = self.object.step_set.all().order_by("order")
@@ -44,12 +55,22 @@ class DocumentDetailView(LoginRequiredMixin, DetailView):
     model = Document
     template_name = "document_detail.html"
 
+    def get_object(self, queryset=None):
+        document = super().get_object(queryset)
+        if self.request.user.is_staff:
+            return document
+        for step in document.step_set.all():
+            if step.task.category.department == self.request.user.department:
+                return document
+        else:
+            raise PermissionDenied
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["is_bookmarked"] = Bookmark.objects.filter(
             user=self.request.user, document=self.object
         ).exists()
-        related_step = self.object.step_set.first()
+        related_step = self.object.step_set.first()  # ここを修正
         if related_step is not None:
             context["task_id"] = related_step.task.id
             context["task_name"] = related_step.task.name
@@ -163,21 +184,29 @@ class HomeView(LoginRequiredMixin, TemplateView):
 
         now = timezone.now()
         two_weeks_ago = now - timedelta(weeks=2)
+        user_department = self.request.user.department
+
+        context["recent_bookmarks"] = (
+            Bookmark.objects.filter(
+                user=self.request.user,
+            )
+            .order_by("-created_at")
+            .distinct()[:10]
+        )
 
         if self.request.user.is_staff:
-            context["recent_documents"] = Document.objects.filter(
-                updated_at__gte=two_weeks_ago
-            ).order_by("-updated_at")[:10]
-            context["recent_bookmarks"] = Bookmark.objects.order_by("-created_at")[:10]
+            context["recent_documents"] = (
+                Document.objects.filter(updated_at__gte=two_weeks_ago)
+                .order_by("-updated_at")
+                .distinct()[:10]
+            )
         else:
-            user_department = self.request.user.department
-            context["recent_documents"] = Document.objects.filter(
-                step__task__category__department=user_department,
-                updated_at__gte=two_weeks_ago,
-            ).order_by("-updated_at")[:10]
-            context["recent_bookmarks"] = Bookmark.objects.filter(
-                user=self.request.user,
-                document__step__task__category__department=user_department,
-            ).order_by("-created_at")[:10]
-
+            context["recent_documents"] = (
+                Document.objects.filter(
+                    step__task__category__department=user_department,
+                    updated_at__gte=two_weeks_ago,
+                )
+                .order_by("-updated_at")
+                .distinct()[:10]
+            )
         return context
