@@ -18,7 +18,7 @@ class Department(models.Model):
 class Category(models.Model):
     name = models.CharField(verbose_name="カテゴリ名", max_length=255)
     department = models.ForeignKey(
-        Department, verbose_name="部署", blank=True, on_delete=models.PROTECT
+        Department, verbose_name="部署", null=True, blank=True, on_delete=models.PROTECT
     )
     created_at = models.DateTimeField(verbose_name="作成日時", auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name="更新日時", auto_now=True)
@@ -34,7 +34,7 @@ class Category(models.Model):
 class Task(models.Model):
     name = models.CharField(verbose_name="作業名", max_length=255)
     category = models.ForeignKey(
-        Category, verbose_name="カテゴリ", blank=True, on_delete=models.CASCADE
+        Category, verbose_name="カテゴリ", null=True, blank=True, on_delete=models.CASCADE
     )
     created_at = models.DateTimeField(verbose_name="作成日時", auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name="更新日時", auto_now=True)
@@ -50,7 +50,9 @@ class Task(models.Model):
 class Document(models.Model):
     document_number = models.CharField(verbose_name="ドキュメント番号", max_length=255)
     document_title = models.CharField(verbose_name="ドキュメントタイトル", max_length=255)
-    document_filename = models.CharField(verbose_name="ドキュメントファイル名", max_length=255)
+    document_filename = models.CharField(
+        verbose_name="ドキュメントファイル名", max_length=255, null=True, blank=True
+    )
     document_content = models.TextField(verbose_name="ドキュメント内容")
     created_at = models.DateTimeField(verbose_name="作成日時", auto_now_add=True)
     updated_at = models.DateTimeField(verbose_name="更新日時", auto_now=True)
@@ -88,7 +90,7 @@ class Step(models.Model):
         ordering = ["order"]
 
     def __str__(self):
-        return self.name
+        return f"{self.order} - {self.name}"
 
 
 class CustomUserManager(BaseUserManager):
@@ -139,6 +141,7 @@ class Bookmark(models.Model):
     document = models.ForeignKey(
         Document, verbose_name="ドキュメント", on_delete=models.CASCADE
     )
+    created_at = models.DateTimeField(verbose_name="作成日時", auto_now_add=True)
 
     class Meta:
         verbose_name = "ブックマーク"

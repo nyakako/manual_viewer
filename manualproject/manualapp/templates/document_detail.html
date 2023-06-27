@@ -1,79 +1,180 @@
 {% extends 'base.html' %}
+{% load static %} 
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'manualapp/document_detail.css' %}" />
+{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item"><a href="{% url 'task_list' %}">
+	<i class="fas fa-briefcase mr-1"></i>
+	作業一覧</a>
+</li>
+{% if task_id %}
+<li class="breadcrumb-item">
+	<a href="{% url 'task_step_list' task_id %}">手順一覧</a>
+</li>
+{% endif %}
+<li class="breadcrumb-item active" aria-current="page">
+	<i class="far fa-file-alt mr-1"></i>{{ object }}
+</li>
+{% endblock %}
+{% block content_title %}	{{ document.document_number }}&nbsp;:&nbsp;{{ document.document_title }}{% endblock %}
+
 {% block content %}
 
-{% if task_name %}
-<p>作業名: {{ task_name }}</p>
-{% else %}
-<p>作業名: このドキュメントはタスクに紐づいていません。</p>
-{% endif %}
-
-{% if step_name %}
-<p>手順{{ step_order }} : {{ step_name }}</p>
-{% else %}
-<p>手順名: このドキュメントは手順に紐づいていません。</p>
-{% endif %}
-
-<h2>{{ document.document_number }} : {{ document.document_title }}
-	{% if user.is_authenticated %}
-		{% if is_bookmarked %}
-			<button type="button" id="bookmarkButton" class="btn btn-secondary mx-2">ブックマークを削除</button>
-		{% else %}
-			<button type="button" id="bookmarkButton" class="btn btn-danger mx-2">ブックマークに追加</button>
-		{% endif %}
-</button>
-{% endif %}
-</h2>
-
-<div class="my-4">
-	ドキュメント内容:
-	<br>
-	 {{ document.document_content }}
-</div>
-
-<!-- <p>ドキュメントファイル名: {{ document.document_filename }}</p> -->
-<p>作成日時: {{ document.created_at }}
-	<br>更新日時: {{ document.updated_at }}
-</p>
-
-<h5>関連ドキュメント:</h5>
-{% if related_documents %}
-<ul>
-	{% for related_document in related_documents %}
-	<li><a href="{% url 'document_detail' related_document.pk %}">{{ related_document.document_title }}</a></li>
-	{% endfor %}
-</ul>
-{% else %}
-	<p>関連ドキュメントはありません。</p>
-{% endif %}
-
-{% for step in document.step_set.all %}
-<div class="my-4">
-	<h5>関連手順 {{ step.name }}</h5>
-	<div class="row justify-content-between">
-		<div class="col-4">
-			前の手順
-			<ul>
-				{% for previous_step in step.previous_steps.all %}
-				<li>手順{{ previous_step.order }}: {{ previous_step.name }}</li>
-				{% endfor %}
-			</ul>
+<div class="card">
+	<div class="row">
+		<div class="col-12 col-sm-6">
+			{% if task_id %}
+			<a href="{% url 'task_step_list' task_id %}">
+			{% endif %}
+			<div class="info-box bg-light">
+				<div class="info-box-content">
+					<span class="info-box-text text-center text-muted">作業名</span>
+					<span class="info-box-number text-center text-muted mb-0">
+						{% if task_name %}
+							{{ task_name }}
+						{% else %}
+							このドキュメントはタスクに紐づいていません
+						{% endif %}
+					</span>
+				</div>
+			</div>
+			{% if task_id %}
+		  </a>
+			{% endif %}
 		</div>
-		<div class="col-4">
-			次の手順
-			<ul>
-				{% for next_step in step.next_steps.all %}
-				<li>手順{{ next_step.order }}:{{ next_step.name }}</li>
-				{% endfor %}
-			</ul>
+		<div class="col-12 col-sm-6">
+			<div class="info-box bg-light">
+				<div class="info-box-content">
+					<span class="info-box-text text-center text-muted">
+						{% if step_name %}
+							手順{{ step_order }}
+						{% else %}
+							手順
+						{% endif %}
+					</span>
+					<span class="info-box-number text-center text-muted mb-0">
+						{% if step_name %}
+							{{ step_name }}
+						{% else %}
+							このドキュメントは手順に紐づいていません。
+						{% endif %}
+					</span>
+				</div>
+			</div>
 		</div>
 	</div>
+
+
+	<div class="card-title">
+	{% if user.is_authenticated %}
+		{% if is_bookmarked %}
+			<button type="button" id="bookmarkButton" class="btn btn-sm btn-secondary mt-3 mx-3"><i class="far fa-bookmark"></i>&nbsp;&nbsp;ブックマークを削除</button>
+		{% else %}
+			<button type="button" id="bookmarkButton" class="btn btn-sm btn-danger mt-3 mx-3"><i class="fas fa-bookmark"></i>&nbsp;&nbsp;ブックマークに追加</button>
+		{% endif %}
+	{% endif %}
+	</div>
+	
+
+	<div class="card-body">
+		<div class="row">
+			<div class="col-12 col-md-12 col-lg-10 order-1 order-md-1">
+
+				<div class="row">
+					<div class="col-12">
+						<div class="post">
+							<p>
+								{{ document.document_content }}
+							</p>
+						</div>
+
+						
+						{% if related_documents %}
+						<div class="card">
+						<div class="card-header h5">関連ドキュメント:</div>
+						<div class="card-body">
+						<ol>
+							{% for related_document in related_documents %}
+							<li><a href="{% url 'document_detail' related_document.pk %}">{{ related_document.document_number }}&nbsp;&nbsp;{{ related_document.document_title }}</a></li>
+							{% endfor %}
+						</ol>
+					  </div>
+					  </div>
+						{% endif %}
+						
+						{% if step_name %}
+						<div class="card">
+							<div class="card-header h5">関連手順</div>
+							<div class="card-body">
+						{% for step in document.step_set.all %}
+						  <div class="card">
+							<div class="card-header h5">手順{{ step.order }}&nbsp;:&nbsp;{{ step.name }}</div>
+							<div class="card-body">							
+							<div class="row justify-content-between">
+								<div class="col-auto mr-auto">
+										{% for previous_step in step.previous_steps.all %}
+										前の手順
+										{% if previous_step.documents.first %}
+										<div class="text-center mt-2 mb-2">
+											<a href="{% url 'document_detail' previous_step.documents.first.pk %}" class="btn btn btn-info">
+												手順{{ previous_step.order }}&nbsp;:&nbsp;{{ previous_step.name }}
+											</a>
+										</div>
+										{% else %}
+												手順{{ previous_step.order }}&nbsp;:&nbsp;{{ previous_step.name }} (マニュアル未登録)
+										{% endif %}
+										{% endfor %}
+									</div>
+
+								<div class="col-auto">
+										{% for next_step in step.next_steps.all %}
+										次の手順
+										{% if next_step.documents.first %}
+										<div class="text-center mt-2 mb-2">
+											<a href="{% url 'document_detail' next_step.documents.first.pk %}" class="btn btn btn-info">
+												手順{{ next_step.order }}&nbsp;:&nbsp;{{ next_step.name }}
+											</a>
+										</div>
+										{% else %}
+												手順{{ next_step.order }}&nbsp;:&nbsp;{{ next_step.name }} (マニュアル未登録)
+										{% endif %}
+										{% endfor %}
+									</div>
+								</div>
+								</div>
+								</div>
+						{% endfor %}
+					  </div>
+					  </div>
+						{% endif %}
+
+
+					</div>
+				</div>
+			</div>
+			<div class="col-12 col-md-12 col-lg-2 order-2 order-md-2">
+				<div class="text-muted">
+					<p class="text-sm">作成日時
+						<b class="d-block">{{ document.created_at }}</b>
+					</p>
+					<p class="text-sm">更新日時
+						<b class="d-block">{{ document.updated_at }}</b>
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /.card-body -->
 </div>
-{% endfor %}
+<!-- /.card -->
 
 <form id="csrfForm" style="display: none;">
 	{% csrf_token %}
 </form>
 
+{% block extra_script %}
 <script>
 	const bookmarkButton = document.getElementById("bookmarkButton");
 
@@ -91,4 +192,5 @@
 		});
 	});
 </script>
+{% endblock %}
 {% endblock %}

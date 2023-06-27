@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item active" aria-current="page">
+  <i class="far fa-file-alt mr-1"></i>作業一覧
+</li>
+{% endblock %}
+
+{% block content_title %}作業一覧{% endblock %}
+{% block content %}
+
+<div class="row ">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body table-responsive p-3">
+        <table id="task-table" class="table table-hover text-nowrap">
+          <thead>
+            <tr>
+              <th scope="col">作業名</th>
+              <th scope="col">カテゴリ名</th>
+              <th scope="col">部署名</th>
+              <th scope="col">作成日</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for task in tasks %}
+            <tr data-href="{% url 'task_step_list' task.id %}">
+              <td>{{ task.name }}</td>
+              <td>{{ task.category.name }}</td>
+              <td>{{ task.category.department.name }}</td>
+              <td>{{ task.created_at }}</td>
+            </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6">該当する作業がありません。</td>
+                </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% block extra_script %}
+<script>
+
+  var tableOptions = {
+    "info": true,
+    "paging": true,
+    "lengthChange":false,
+    "searching": true,
+    "ordering": true,
+    "order" :[[ 3, "desc"]],
+    "language": {
+              "url": "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Japanese.json"
+    }
+  }
+  
+  $(function() {
+    $("#task-table").DataTable(tableOptions);
+  
+    $('tr[data-href]').on('click', function(e) {
+      location.href = $(this).data('href');
+    });
+  });
+  </script>
+
+{% endblock %}
+{% endblock %}

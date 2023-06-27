@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}{% endblock %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item active" aria-current="page">
+  <i class="far fa-bookmark mr-1"></i>ブックマーク一覧
+</li>
+{% endblock %}
+
+{% block content_title %}ブックマーク一覧{% endblock %}
+{% block content %}
+
+<div class="row ">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-body table-responsive p-3">
+        <table id="bookmark-table" class="table table-hover text-nowrap">
+          <thead>
+            <tr>
+              <th>ドキュメントタイトル</th>
+              <th>ドキュメント番号</th>
+              <th>ブックマーク日時</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for bookmark in object_list %}
+            <tr data-href="{% url 'document_detail' bookmark.document.pk %}">
+              <td>{{ bookmark.document.document_title }}</td>
+              <td>{{ bookmark.document.document_number }}</td>
+              <td>{{ bookmark.created_at }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% block extra_script %}
+<script>
+
+var tableOptions = {
+  "info": true,
+  "paging": true,
+  "lengthChange":false,
+  "searching": true,
+  "ordering": true,
+  "order" :[[ 2, "desc"]],
+  "language": {
+            "url": "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Japanese.json"
+  }
+}
+
+$(function() {
+  $("#bookmark-table").DataTable(tableOptions);
+
+  $('tr[data-href]').on('click', function(e) {
+    location.href = $(this).data('href');
+  });
+});
+</script>
+{% endblock %}
+{% endblock %}
