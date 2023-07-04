@@ -87,6 +87,7 @@ class TaskAdmin(admin.ModelAdmin):
     list_display = ["name", "get_category", "get_department"]
     search_fields = ["name"]
     list_filter = ["category__department__name", "category__name"]
+    autocomplete_fields = ["category"]
 
     def get_department(self, obj):
         return obj.category.department.name
@@ -101,12 +102,13 @@ class TaskAdmin(admin.ModelAdmin):
 
 class StepAdmin(admin.ModelAdmin):
     list_display = ["name", "order", "get_task", "get_category", "get_department"]
-    search_fields = ["name"]
+    search_fields = ["name", "task__name"]
     list_filter = [
         "task__category__department__name",
         "task__category__name",
         "task__name",
     ]
+    autocomplete_fields = ["task", "next_steps", "documents"]
 
     def get_task(self, obj):
         return obj.task.name
@@ -126,7 +128,7 @@ class StepAdmin(admin.ModelAdmin):
 
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ["name", "department"]
-    search_fields = ["name"]
+    search_fields = ["name", "department__name"]
     list_filter = [
         "department",
     ]
@@ -145,12 +147,15 @@ class DocumentAdmin(admin.ModelAdmin):
         "get_category_name",
         "get_department_name",
     ]
-    search_fields = ["document_number", "document_title"]
+    search_fields = [
+        "document_number",
+        "document_title",
+        "step__name",
+        "step__task__name",
+    ]
     list_filter = [
         "step__task__category__department__name",
         "step__task__category__name",
-        "step__task__name",
-        "step__name",
     ]
 
     def get_steps(self, obj):
@@ -180,11 +185,11 @@ class DocumentAdmin(admin.ModelAdmin):
 class BookmarkAdmin(admin.ModelAdmin):
     list_display = ["get_user_name", "get_document_number", "get_document_title"]
     search_fields = [
-        "user",
+        "user__username",
         "document__document_number",
         "document__document_title",
     ]
-    list_filter = ["user__username", "document__document_title"]
+    list_filter = ["user__username"]
 
     def get_user_name(self, obj):
         return obj.user.username

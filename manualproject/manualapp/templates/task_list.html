@@ -33,9 +33,9 @@
               <td>{{ task.created_at }}</td>
             </tr>
             {% empty %}
-                <tr>
-                    <td colspan="6">該当する作業がありません。</td>
-                </tr>
+            <tr>
+              <td colspan="6">該当する作業がありません。</td>
+            </tr>
             {% endfor %}
           </tbody>
         </table>
@@ -50,23 +50,23 @@
   var tableOptions = {
     "info": true,
     "paging": true,
-    "lengthChange":false,
+    "lengthChange": false,
     "searching": true,
     "ordering": true,
-    "order" :[[ 3, "desc"]],
+    "order": [[3, "desc"]],
     "language": {
-              "url": "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Japanese.json"
+      "url": "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Japanese.json"
     }
   }
-  
-  $(function() {
+
+  $(function () {
     $("#task-table").DataTable(tableOptions);
-  
-    $('tr[data-href]').on('click', function(e) {
+
+    $('tr[data-href]').on('click', function (e) {
       location.href = $(this).data('href');
     });
   });
-  </script>
+</script>
 
 {% endblock %}
 {% endblock %}

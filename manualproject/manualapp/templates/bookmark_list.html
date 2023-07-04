@@ -41,25 +41,25 @@
 {% block extra_script %}
 <script>
 
-var tableOptions = {
-  "info": true,
-  "paging": true,
-  "lengthChange":false,
-  "searching": true,
-  "ordering": true,
-  "order" :[[ 2, "desc"]],
-  "language": {
-            "url": "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Japanese.json"
+  var tableOptions = {
+    "info": true,
+    "paging": true,
+    "lengthChange": false,
+    "searching": true,
+    "ordering": true,
+    "order": [[2, "desc"]],
+    "language": {
+      "url": "http://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Japanese.json"
+    }
   }
-}
 
-$(function() {
-  $("#bookmark-table").DataTable(tableOptions);
+  $(function () {
+    $("#bookmark-table").DataTable(tableOptions);
 
-  $('tr[data-href]').on('click', function(e) {
-    location.href = $(this).data('href');
+    $('tr[data-href]').on('click', function (e) {
+      location.href = $(this).data('href');
+    });
   });
-});
 </script>
 {% endblock %}
 {% endblock %}

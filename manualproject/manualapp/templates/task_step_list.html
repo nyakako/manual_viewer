@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 {% block breadcrumb %}
-    <li class="breadcrumb-item"><a href="{% url 'task_list' %}">
-      <i class="fas fa-briefcase mr-1"></i>
-      作業一覧</a>
-    </li>
-    <li class="breadcrumb-item active" aria-current="page">{{ object.name }}</li>
+<li class="breadcrumb-item"><a href="{% url 'task_list' %}">
+    <i class="fas fa-briefcase mr-1"></i>
+    作業一覧</a>
+</li>
+<li class="breadcrumb-item active" aria-current="page">{{ object.name }}</li>
 {% endblock %}
 
 {% block content_title %}{{ task.name }}{% endblock %}
@@ -12,22 +12,22 @@
 {% block content %}
 
 {% if steps %}
-  {% for step in steps %}
-  <div class="card mb-3">
-    <div class="card-header h5">手順{{ step.order }}&nbsp;:&nbsp;{{ step.name }}</div>
-    <div class="card-body">
-      {% if step.documents.all %}
-      <ul class="list-group list-group-flush">
-          {% for document in step.documents.all %}
-              <li class="list-group-item"><a href="{% url 'document_detail' document.pk %}">{{ document.document_number }}: {{ document.document_title }}</a></li>
-          {% endfor %}
-      </ul>
-      {% else %}
-      <p>ドキュメントがありません</p>
-      {% endif %}
-    </div>
+{% for step in steps %}
+<div class="card mb-3">
+  <div class="card-header h5">手順{{ step.order }}&nbsp;:&nbsp;{{ step.name }}</div>
+  <div class="card-body">
+    {% if step.documents.all %}
+    <ul class="list-group list-group-flush">
+      {% for document in step.documents.all %}
+      <li class="list-group-item"><a href="{% url 'document_detail' document.pk %}">{{ document.document_number}}:{{document.document_title }}</a></li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p>ドキュメントがありません</p>
+    {% endif %}
   </div>
-  {% endfor %}
+</div>
+{% endfor %}
 {% else %}
 <div class="card mb-3">
   <div class="card-header">手順が登録されていません</div>

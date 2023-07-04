@@ -1,13 +1,15 @@
 {% extends 'base.html' %}
-{% load static %} 
+{% load static %}
 {% block extra_css %}
 <link rel="stylesheet" type="text/css" href="{% static 'manualapp/document_detail.css' %}" />
+<!-- ckeditor  -->
+<link rel="stylesheet" href="{%static 'ckeditor/ckeditor/contents.css' %}">
 {% endblock %}
 
 {% block breadcrumb %}
 <li class="breadcrumb-item"><a href="{% url 'task_list' %}">
-	<i class="fas fa-briefcase mr-1"></i>
-	作業一覧</a>
+		<i class="fas fa-briefcase mr-1"></i>
+		作業一覧</a>
 </li>
 {% if task_id %}
 <li class="breadcrumb-item">
@@ -18,7 +20,7 @@
 	<i class="far fa-file-alt mr-1"></i>{{ object }}
 </li>
 {% endblock %}
-{% block content_title %}	{{ document.document_number }}&nbsp;:&nbsp;{{ document.document_title }}{% endblock %}
+{% block content_title %} {{ document.document_number }}&nbsp;:&nbsp;{{ document.document_title }}{% endblock %}
 
 {% block content %}
 
@@ -27,21 +29,21 @@
 		<div class="col-12 col-sm-6">
 			{% if task_id %}
 			<a href="{% url 'task_step_list' task_id %}">
-			{% endif %}
-			<div class="info-box bg-light">
-				<div class="info-box-content">
-					<span class="info-box-text text-center text-muted">作業名</span>
-					<span class="info-box-number text-center text-muted mb-0">
-						{% if task_name %}
+				{% endif %}
+				<div class="info-box bg-light">
+					<div class="info-box-content">
+						<span class="info-box-text text-center text-muted">作業名</span>
+						<span class="info-box-number text-center text-muted mb-0">
+							{% if task_name %}
 							{{ task_name }}
-						{% else %}
+							{% else %}
 							このドキュメントはタスクに紐づいていません
-						{% endif %}
-					</span>
+							{% endif %}
+						</span>
+					</div>
 				</div>
-			</div>
-			{% if task_id %}
-		  </a>
+				{% if task_id %}
+			</a>
 			{% endif %}
 		</div>
 		<div class="col-12 col-sm-6">
@@ -49,16 +51,16 @@
 				<div class="info-box-content">
 					<span class="info-box-text text-center text-muted">
 						{% if step_name %}
-							手順{{ step_order }}
+						手順{{ step_order }}
 						{% else %}
-							手順
+						手順
 						{% endif %}
 					</span>
 					<span class="info-box-number text-center text-muted mb-0">
 						{% if step_name %}
-							{{ step_name }}
+						{{ step_name }}
 						{% else %}
-							このドキュメントは手順に紐づいていません。
+						このドキュメントは手順に紐づいていません。
 						{% endif %}
 					</span>
 				</div>
@@ -66,17 +68,19 @@
 		</div>
 	</div>
 
-
 	<div class="card-title">
-	{% if user.is_authenticated %}
+		{% if user.is_authenticated %}
 		{% if is_bookmarked %}
-			<button type="button" id="bookmarkButton" class="btn btn-sm btn-secondary mt-3 mx-3"><i class="far fa-bookmark"></i>&nbsp;&nbsp;ブックマークを削除</button>
+		<button type="button" id="bookmarkButton" class="btn btn-sm btn-secondary mt-3 mx-3">
+			<i class="far fa-bookmark"></i>&nbsp;&nbsp;ブックマークを削除
+		</button>
 		{% else %}
-			<button type="button" id="bookmarkButton" class="btn btn-sm btn-danger mt-3 mx-3"><i class="fas fa-bookmark"></i>&nbsp;&nbsp;ブックマークに追加</button>
+		<button type="button" id="bookmarkButton" class="btn btn-sm btn-danger mt-3 mx-3">
+			<i class="fas fa-bookmark"></i>&nbsp;&nbsp;ブックマークに追加
+		</button>
 		{% endif %}
-	{% endif %}
+		{% endif %}
 	</div>
-	
 
 	<div class="card-body">
 		<div class="row">
@@ -84,73 +88,72 @@
 
 				<div class="row">
 					<div class="col-12">
-						<div class="post">
-							<p>
-								{{ document.document_content }}
-							</p>
+						<div class="post document-content">
+							{{ document.document_content|safe }}
 						</div>
 
-						
 						{% if related_documents %}
 						<div class="card">
-						<div class="card-header h5">関連ドキュメント:</div>
-						<div class="card-body">
-						<ol>
-							{% for related_document in related_documents %}
-							<li><a href="{% url 'document_detail' related_document.pk %}">{{ related_document.document_number }}&nbsp;&nbsp;{{ related_document.document_title }}</a></li>
-							{% endfor %}
-						</ol>
-					  </div>
-					  </div>
+							<div class="card-header h5">関連ドキュメント:</div>
+							<div class="card-body">
+								<ol>
+									{% for related_document in related_documents %}
+									<li>
+										<a href="{% url 'document_detail' related_document.pk %}">
+											{{ related_document.document_number}}&nbsp;&nbsp;{{ related_document.document_title }}
+										</a>
+									</li>
+									{% endfor %}
+								</ol>
+							</div>
+						</div>
 						{% endif %}
-						
+
 						{% if step_name %}
 						<div class="card">
 							<div class="card-header h5">関連手順</div>
 							<div class="card-body">
-						{% for step in document.step_set.all %}
-						  <div class="card">
-							<div class="card-header h5">手順{{ step.order }}&nbsp;:&nbsp;{{ step.name }}</div>
-							<div class="card-body">							
-							<div class="row justify-content-between">
-								<div class="col-auto mr-auto">
-										{% for previous_step in step.previous_steps.all %}
-										前の手順
-										{% if previous_step.documents.first %}
-										<div class="text-center mt-2 mb-2">
-											<a href="{% url 'document_detail' previous_step.documents.first.pk %}" class="btn btn btn-info">
-												手順{{ previous_step.order }}&nbsp;:&nbsp;{{ previous_step.name }}
-											</a>
-										</div>
-										{% else %}
+								{% for step in document.step_set.all %}
+								<div class="card">
+									<div class="card-header h5">手順{{ step.order }}&nbsp;:&nbsp;{{ step.name }}</div>
+									<div class="card-body">
+										<div class="row justify-content-between">
+											<div class="col-auto mr-auto">
+												{% for previous_step in step.previous_steps.all %}
+												前の手順
+												{% if previous_step.documents.first %}
+												<div class="text-center mt-2 mb-2">
+													<a href="{% url 'document_detail' previous_step.documents.first.pk %}" class="btn btn btn-info">
+														手順{{ previous_step.order }}&nbsp;:&nbsp;{{ previous_step.name }}
+													</a>
+												</div>
+												{% else %}
 												手順{{ previous_step.order }}&nbsp;:&nbsp;{{ previous_step.name }} (マニュアル未登録)
-										{% endif %}
-										{% endfor %}
-									</div>
+												{% endif %}
+												{% endfor %}
+											</div>
 
-								<div class="col-auto">
-										{% for next_step in step.next_steps.all %}
-										次の手順
-										{% if next_step.documents.first %}
-										<div class="text-center mt-2 mb-2">
-											<a href="{% url 'document_detail' next_step.documents.first.pk %}" class="btn btn btn-info">
-												手順{{ next_step.order }}&nbsp;:&nbsp;{{ next_step.name }}
-											</a>
-										</div>
-										{% else %}
+											<div class="col-auto">
+												{% for next_step in step.next_steps.all %}
+												次の手順
+												{% if next_step.documents.first %}
+												<div class="text-center mt-2 mb-2">
+													<a href="{% url 'document_detail' next_step.documents.first.pk %}" class="btn btn btn-info">
+														手順{{ next_step.order }}&nbsp;:&nbsp;{{ next_step.name }}
+													</a>
+												</div>
+												{% else %}
 												手順{{ next_step.order }}&nbsp;:&nbsp;{{ next_step.name }} (マニュアル未登録)
-										{% endif %}
-										{% endfor %}
+												{% endif %}
+												{% endfor %}
+											</div>
+										</div>
 									</div>
 								</div>
-								</div>
-								</div>
-						{% endfor %}
-					  </div>
-					  </div>
+								{% endfor %}
+							</div>
+						</div>
 						{% endif %}
-
-
 					</div>
 				</div>
 			</div>
@@ -178,18 +181,18 @@
 <script>
 	const bookmarkButton = document.getElementById("bookmarkButton");
 
-	bookmarkButton.addEventListener("click", function() {
+	bookmarkButton.addEventListener("click", function () {
 		fetch("{% url 'bookmark' document.id %}", {
 			method: "POST",
 			headers: {
 				"X-CSRFToken": document.querySelector('#csrfForm [name="csrfmiddlewaretoken"]').value
 			}
 		})
-		.then(response => response.json())
-		.then(data => {
-			// alert(data.message);
-			location.reload();
-		});
+			.then(response => response.json())
+			.then(data => {
+				// alert(data.message);
+				location.reload();
+			});
 	});
 </script>
 {% endblock %}

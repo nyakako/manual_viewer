@@ -1,6 +1,7 @@
-{% load static %} 
+{% load static %}
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -19,88 +20,76 @@
 </head>
 
 <body class="hold-transition login-page">
-<div class="login-box">
-  <div class="login-logo">
-    Manual Viewer
-  </div>
-  <!-- /.login-logo -->
-  <div class="card">
-    <div class="card-body login-card-body">
-      <p class="login-box-msg">ログイン情報を入力してください</p>
+  <div class="login-box">
+    <div class="login-logo">
+      Manual Viewer
+    </div>
+    <!-- /.login-logo -->
+    <div class="card">
+      <div class="card-body login-card-body">
+        <p class="login-box-msg">ログイン情報を入力してください</p>
 
-      <form method="post">
-        {% csrf_token %}
-        <!-- <h1 class="h3 mb-3 fw-normal">ログイン</h1> -->
-        {% if form.username.errors %}
-        <div class="alert alert-danger" role="alert">{{ form.username.errors }}</div>
-        {% endif %} 
-        {% if form.password.errors %}
-        <div class="alert alert-danger" role="alert">{{ form.password.errors }}</div>
-        {% endif %}
-        {% if form.non_field_errors %}
-        <div class="alert alert-danger" role="alert">{{ form.non_field_errors }}</div>
-        {% endif %}
-        <div class="input-group mb-3">
-          <input 
-            type="email" 
-            class="form-control"
-            placeholder="メールアドレス"
-            name="{{ form.username.name }}"
-            required
-            autofocus
-          >
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-envelope"></span>
+        <form method="post">
+          {% csrf_token %}
+          <!-- <h1 class="h3 mb-3 fw-normal">ログイン</h1> -->
+          {% if form.username.errors %}
+          <div class="alert alert-danger" role="alert">{{ form.username.errors }}</div>
+          {% endif %}
+          {% if form.password.errors %}
+          <div class="alert alert-danger" role="alert">{{ form.password.errors }}</div>
+          {% endif %}
+          {% if form.non_field_errors %}
+          <div class="alert alert-danger" role="alert">{{ form.non_field_errors }}</div>
+          {% endif %}
+          <div class="input-group mb-3">
+            <input type="email" class="form-control" placeholder="メールアドレス" name="{{ form.username.name }}" required autofocus>
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-envelope"></span>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="input-group mb-3">
-          <input
-            type="password" 
-            class="form-control" 
-            placeholder="パスワード"
-            name="{{ form.password.name }}"
-            required
-          >
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-lock"></span>
+          <div class="input-group mb-3">
+            <input type="password" class="form-control" placeholder="パスワード" name="{{ form.password.name }}" required>
+            <div class="input-group-append">
+              <div class="input-group-text">
+                <span class="fas fa-lock"></span>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="row">
+          <div class="row">
 
-          <!-- /.col -->
-          <div class="col-12 my-1">
-            <button type="submit" class="btn btn-primary btn-block py-2">ログイン</button>
+            <!-- /.col -->
+            <div class="col-12 my-1">
+              <button type="submit" class="btn btn-primary btn-block py-2">ログイン</button>
+            </div>
+            <!-- /.col -->
           </div>
-          <!-- /.col -->
+        </form>
+
+        <div class="social-auth-links text-center mb-3">
+          <p>- OR -</p>
+
         </div>
-      </form>
-
-      <div class="social-auth-links text-center mb-3">
-        <p>- OR -</p>
-
-      </div>
         <a class="btn btn-outline-secondary py-2 w-100" href="{% url 'register' %}">新規登録</a>
-      <!-- /.social-auth-links -->
+        <!-- /.social-auth-links -->
 
-      <!-- <p class="mb-1">
+        <!-- <p class="mb-1">
         <a href="forgot-password.html">I forgot my password</a>
       </p> -->
 
+      </div>
+      <!-- /.login-card-body -->
     </div>
-    <!-- /.login-card-body -->
   </div>
-</div>
-<!-- /.login-box -->
+  <!-- /.login-box -->
 
-<!-- jQuery -->
-<script src="{%static 'AdminLTE-3.2.0/plugins/jquery/jquery.min.js' %}"></script>
-<!-- Bootstrap 4 -->
-<script src="{%static 'AdminLTE-3.2.0/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-<!-- AdminLTE App -->
-<script src="{%static 'AdminLTE-3.2.0/dist/js/adminlte.js' %}"></script>
+  <!-- jQuery -->
+  <script src="{%static 'AdminLTE-3.2.0/plugins/jquery/jquery.min.js' %}"></script>
+  <!-- Bootstrap 4 -->
+  <script src="{%static 'AdminLTE-3.2.0/plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <!-- AdminLTE App -->
+  <script src="{%static 'AdminLTE-3.2.0/dist/js/adminlte.js' %}"></script>
 </body>
+
 </html>
