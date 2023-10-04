@@ -1,2 +1,2 @@
-static/**/*.js linguist-vendored
-static/**/*.css linguist-vendored
+manualproject/static/**/*.js linguist-vendored
+manualproject/static/**/*.css linguist-vendored
