@@ -14,7 +14,7 @@ https://docs.djangoproject.com/ja/4.2/faq/install/#faq-python-version-support
 
 ### 2. 次に clone したディレクトリに移動して、仮想環境を作成、起動します。
 
-`cd manual_viewer_win`
+`cd manual_viewer`
 
 `python -m venv [仮想環境名]`
 
